@@ -96,8 +96,10 @@ state(turnToBall)
     {
       transition
       {
-//        if(!theFieldBall.ballWasSeen(ballNotSeenTimeout))
-//          goto searchForBall;
+//Elimino la parte de dar la vuelta para ver el balon, esto debido a que un robot debe ir de espaldas.
+
+
+//utilizo mi modulo para que el unico robot que avance hacia el balon sea el que este lejos de esto, asi el observador no se mueve solo aporta a la posicion de la bola
         if( themSensorRepresentation.distance > 1200 )
           goto walkToBall;
       }
@@ -114,14 +116,8 @@ state(turnToBall)
     {
       transition
       {
-          const Angle angleToGoal = calcAngleToGoal();
-//        if(!theFieldBall.ballWasSeen(ballNotSeenTimeout))
-//          goto searchForBall;
         if(themSensorRepresentation.distance > 1200 )
-          goto alignBehindBall;
-          
-//        if(theFieldBall.positionRelative.squaredNorm() < sqr(ballNearThreshold))
-//          goto darVueltita;
+          goto alignBehindBall;   
       }
 
       action
@@ -130,15 +126,36 @@ state(turnToBall)
         theWalkToTargetSkill(Pose2f(walkSpeed, walkSpeed, walkSpeed), theFieldBall.positionRelative);
       }
     }
+    state(alignBehindBall)
+        {
+          const Angle angleToGoal = calcAngleToGoal();
 
+          transition
+          {
+            //si se esta a 1m o menos de distancia mDistance sera verdadero por lo que se pasara al estado de dar una vuelta 
+              if(themSensorRepresentation.mDistance)
+                goto darVueltita;
+          }
+
+          action
+          {
+            theLookForwardSkill();
+            theWalkToTargetSkill(Pose2f(walkSpeed, walkSpeed, walkSpeed), Pose2f(angleToGoal, theFieldBall.positionRelative.x() - ballOffsetX, theFieldBall.positionRelative.y() - ballOffsetY));
+          
+            }
+        }
     state(darVueltita)
     {
       
-
+//este estado pretende hacer que el robot de la vuelta de 180 grados
       transition
       {
         const Angle angleToGoal = calcAngleToGoal();
+        
+        
+        //si el balon fue visto por el robot que viene de espaldas eso implica que se han cumplido los 180 grados
         if(theFieldBall.ballWasSeen() &&  angleToGoal < 200 )
+            //voy al estado de start para que el robot se quede estatico
           goto start;
         if(theFieldBall.ballWasSeen() &&  angleToGoal > 180 )
           goto start;
@@ -151,42 +168,7 @@ state(turnToBall)
       }
     }
 
-    state(alignBehindBall)
-    {
-      const Angle angleToGoal = calcAngleToGoal();
-
-      transition
-      {
-        /*if(!theFieldBall.ballWasSeen(ballNotSeenTimeout))
-          goto searchForBall;*/
-          if(themSensorRepresentation.mDistance)
-            goto darVueltita;
-      }
-
-      action
-      {
-        theLookForwardSkill();
-        theWalkToTargetSkill(Pose2f(walkSpeed, walkSpeed, walkSpeed), Pose2f(angleToGoal, theFieldBall.positionRelative.x() - ballOffsetX, theFieldBall.positionRelative.y() - ballOffsetY));
-      
-        }
-    }
-
-   
-
-    state(searchForBall)
-    {
-      transition
-      {
-        if(theFieldBall.ballWasSeen())
-          goto turnToBall;
-      }
-
-      action
-      {
-        theLookForwardSkill();
-        theWalkAtRelativeSpeedSkill(Pose2f(walkSpeed, 0.f, 0.f));
-      }
-    }
+    
   }
 
   Angle calcAngleToGoal() const

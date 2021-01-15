@@ -15,11 +15,10 @@
 
 STREAMABLE(mSensorRepresentation, COMMA public BHumanMessageParticle<idmSensorRepresentation>
 {
-    void operator>>(BHumanMessage& m) const override;
+   void operator>>(BHumanMessage& m) const override;
    void operator<<(const BHumanMessage& m) override  ,
 	(bool)(false) mDistance,
     (float)(0) distance,
-    
 });
 
 inline void mSensorRepresentation::operator>>(BHumanMessage& m) const
@@ -42,15 +41,7 @@ inline void mSensorRepresentation::operator<<(const BHumanMessage& m)
 }
 
 
-//STREAMABLE(mSensorRepresentation,
-//{
-// ,
-//	(bool)(false) mDistance,
-//    (float)(0) distance,
-//    (Pose2f) myPose,
-//    (Angle) angeltoGoal,
-//    (int) distanciaOtro,
-//});
+
 
 
 

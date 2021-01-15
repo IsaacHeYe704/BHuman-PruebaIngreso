@@ -10,12 +10,7 @@ void mSensor::update(mSensorRepresentation& mSensorRepresentation)
     float xDistance = 0;
     float yDistance = 0;
     
-    
-     
-      
-       
-     
-    
+
 //here i will  set the distance to the ball
 //if the robot is seing the ball he will do it with his information
     if(theBallModel.seenPercentage > 0)
@@ -30,7 +25,6 @@ void mSensor::update(mSensorRepresentation& mSensorRepresentation)
         yDistance = abs(theRobotPose.translation.y())-abs(theTeamBallModel.position.y());
         mSensorRepresentation.distance =  (float) sqrt((xDistance*xDistance) + (yDistance*yDistance)) - 1000;
     }
-    
     
     
     
